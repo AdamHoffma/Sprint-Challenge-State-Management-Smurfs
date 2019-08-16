@@ -1,8 +1,11 @@
 import React from 'react'
 import {Form, Field, withFormik} from 'formik'
 import * as Yup from 'yup'
+import {connect} from 'react-redux'
+import {getSmurf, postSmurf} from '../actions/actions'
 
-const SmurfForm = ({errors, touched}) => {
+const SmurfForm = ({errors, touched, values, handleSubmit}) => {
+    
     return (
         <div>
             <h1>Smurf Sign Up</h1>
@@ -37,7 +40,19 @@ validationSchema: Yup.object().shape({
     name: Yup.string().required('Name Required'),
     age: Yup.string().required("Age required"),
     height: Yup.string().required('Height required')
-})
+}),
+
+handleSubmit(values, {props}) {
+    props.postSmurf(values)
+    props.getSmurf(values)
+    console.log("props", props)
+}
 })(SmurfForm)
 
-export default FormikForm
+const mapStateToProps = state => {
+    return {
+        Smurfs: state.Smurfs
+    }
+}
+
+export default connect(mapStateToProps, {getSmurf, postSmurf}) (FormikForm)
